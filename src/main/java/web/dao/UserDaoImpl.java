@@ -32,10 +32,11 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(User user, long id) {
         User userById = selectById(id);
-        userById.setFirstName(user.getFirstName());
+        userById.setUsername(user.getUsername());
         userById.setLastName(user.getLastName());
         userById.setAge(user.getAge());
         userById.setEmail(user.getEmail());
+        userById.setRoles(user.getRoles());
         save(userById);
     }
 
@@ -44,5 +45,13 @@ public class UserDaoImpl implements UserDao {
         User userById = selectById(id);
         entityManager.remove(userById);
         entityManager.flush();
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        User user = entityManager.createQuery(
+                        "SELECT u from User u WHERE u.username = :username", User.class).
+                setParameter("username", username).getSingleResult();
+        return user;
     }
 }
